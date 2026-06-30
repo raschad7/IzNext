@@ -1,26 +1,71 @@
 @import "tailwindcss";
 
+/*
+  Haven Constructions — design tokens
+  Colors extracted from the live site's compiled CSS.
+  Typography: the real site uses "Suisse Int'l" (licensed, Swiss Typefaces).
+  We currently render a free grotesk stand-in via --font-suisse (see layout.tsx).
+  When you supply the licensed Suisse .woff2 files, swap them in there only —
+  every component reads from the var, so nothing else changes.
+*/
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* surfaces */
+  --cream: #e6e5dd; /* primary warm background */
+  --cream-soft: #dbdad4;
+  --white: #ffffff;
+  --off-white: #f6f6f6;
+
+  /* ink / text */
+  --ink: #252320; /* primary text color — used site-wide */
+  --ink-deep: #161515;
+  --stone: #363633;
+  --stone-deep: #1f1e1d;
+
+  /* muted */
+  --muted: #81807c;
+  --muted-soft: #a8a7a3;
+  --gray: #6f6f6f;
+
+  /* accent */
+  --accent: #0c388d; /* deep blue */
+  --accent-bright: #0d3b96;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-cream: var(--cream);
+  --color-cream-soft: var(--cream-soft);
+  --color-white: var(--white);
+  --color-off-white: var(--off-white);
+
+  --color-ink: var(--ink);
+  --color-ink-deep: var(--ink-deep);
+  --color-stone: var(--stone);
+  --color-stone-deep: var(--stone-deep);
+
+  --color-muted: var(--muted);
+  --color-muted-soft: var(--muted-soft);
+  --color-gray: var(--gray);
+
+  --color-accent: var(--accent);
+  --color-accent-bright: var(--accent-bright);
+
+  --font-sans: var(--font-suisse);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-suisse), "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Tighten the grotesk display feel the way Suisse is set on the real site */
+.font-display {
+  letter-spacing: -0.02em;
+  line-height: 1.04;
 }
