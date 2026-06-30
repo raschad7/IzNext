@@ -1,15 +1,15 @@
-"use client";
+"use client"
 
-import { useRef } from "react";
-import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react"
+import Image from "next/image"
+import { motion, useScroll, useTransform } from "framer-motion"
 
 const IMAGES = [
   "/images/gallery-1.jpeg",
   "/images/gallery-2.jpeg",
   "/images/gallery-3.jpeg",
   "/images/gallery-4.jpeg",
-];
+]
 
 /*
   Scroll-scrub gallery (the "Bespoke / Luxury" section).
@@ -18,28 +18,36 @@ const IMAGES = [
   them. The source cross-fades through the 4 photos as the scrub continues.
 */
 export default function ScrollGallery() {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start start", "end end"],
-  });
+    offset: ["start 85%", "end end"],
+  })
 
   // Starts as a small SQUARE and grows across the whole section to full-bleed
   // 1521x695 (width grows faster than height -> "grows to full width").
-  const width = useTransform(scrollYProgress, [0, 1], ["24vw", "100vw"]);
-  const height = useTransform(scrollYProgress, [0, 1], ["52vh", "100vh"]);
+  const width = useTransform(scrollYProgress, [0, 1], ["24vw", "100vw"])
+  const height = useTransform(scrollYProgress, [0, 1], ["52vh", "100vh"])
 
   // Side words drift outward a touch as the image swells (barely noticeable).
-  const bespokeX = useTransform(scrollYProgress, [0, 1], [0, -22]);
-  const luxuryX = useTransform(scrollYProgress, [0, 1], [0, 22]);
+  const bespokeX = useTransform(scrollYProgress, [0, 1], [0, -22])
+  const luxuryX = useTransform(scrollYProgress, [0, 1], [0, 22])
 
   // The photo CHANGES WHILE it grows — 4 photos over equal quarters
   // (swaps at 25% / 50% / 75%), so it's on the 4th just before full width.
-  const op0 = useTransform(scrollYProgress, [0, 0.22, 0.28], [1, 1, 0]);
-  const op1 = useTransform(scrollYProgress, [0.22, 0.28, 0.47, 0.53], [0, 1, 1, 0]);
-  const op2 = useTransform(scrollYProgress, [0.47, 0.53, 0.72, 0.78], [0, 1, 1, 0]);
-  const op3 = useTransform(scrollYProgress, [0.72, 0.78, 1], [0, 1, 1]);
-  const opacities = [op0, op1, op2, op3];
+  const op0 = useTransform(scrollYProgress, [0, 0.449, 0.45], [1, 1, 0])
+  const op1 = useTransform(
+    scrollYProgress,
+    [0.449, 0.45, 0.649, 0.65],
+    [0, 1, 1, 0],
+  )
+  const op2 = useTransform(
+    scrollYProgress,
+    [0.649, 0.65, 0.849, 0.85],
+    [0, 1, 1, 0],
+  )
+  const op3 = useTransform(scrollYProgress, [0.849, 0.85, 1], [0, 1, 1])
+  const opacities = [op0, op1, op2, op3]
 
   return (
     <section ref={ref} className="relative h-[280vh] bg-white">
@@ -92,5 +100,5 @@ export default function ScrollGallery() {
         </motion.div>
       </div>
     </section>
-  );
+  )
 }
