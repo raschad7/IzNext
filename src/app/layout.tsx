@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import SmoothScroll from "@/components/SmoothScroll";
 
 /*
   The real site typeface: Suisse Int'l Regular (used site-wide).
@@ -28,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${suisse.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-cream text-ink">
-        {children}
+        <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>
   );

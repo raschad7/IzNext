@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 
 const NAV_LINKS = [
+  { label: "Home", href: "/" },
   { label: "Projects", href: "/projects" },
   { label: "About", href: "/about" },
   { label: "Expertise", href: "/expertise" },
@@ -14,8 +16,7 @@ const NAV_LINKS = [
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-/* Small brand mark, top-left. Placeholder approximation of the real
-   square/diagonal Haven monogram — swap with the real SVG when supplied. */
+/* Small brand mark, top-left. Placeholder for the real monogram. */
 function LogoMark({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 40 40" className={className} aria-label="Haven" role="img">
@@ -29,101 +30,145 @@ function LogoMark({ className = "" }: { className?: string }) {
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Logo + "Let's Talk" hide once past the hero; only the pill stays.
+  const sideHidden = scrolled
+    ? "pointer-events-none -translate-y-2 opacity-0"
+    : "translate-y-0 opacity-100";
+
+  // 420 default, 320 when scrolled, always 420 while open.
+  const pillWidth = open ? 420 : scrolled ? 320 : 420;
 
   return (
-    <>
-      <header className="absolute inset-x-0 top-0 z-50">
-        <div className="mx-auto grid max-w-[1840px] grid-cols-2 items-center px-6 py-6 md:grid-cols-3 md:px-12 md:py-7">
-          {/* Logo */}
-          <Link href="/" className="justify-self-start text-accent">
-            <LogoMark className="h-9 w-9 md:h-11 md:w-11" />
-          </Link>
+    <header className="fixed inset-x-0 top-0 z-50">
+      <div className="mx-auto grid max-w-[1840px] grid-cols-2 items-start px-6 pt-6 md:grid-cols-3 md:px-12 md:pt-7">
+        {/* Logo */}
+        <Link
+          href="/"
+          className={`flex h-16 items-center justify-self-start text-accent transition-all duration-500 ease-out ${sideHidden}`}
+        >
+          <LogoMark className="h-9 w-9 md:h-11 md:w-11" />
+        </Link>
 
-          {/* Center "Menu" pill */}
-          <button
-            onClick={() => setOpen(true)}
-            aria-label="Open menu"
-            className="hidden items-center justify-between rounded-2xl bg-[#efeee9] px-7 py-4 text-ink transition-colors hover:bg-[#e7e6e0] md:flex md:w-[400px] lg:w-[490px]"
-          >
-            <span className="text-base">Menu</span>
-            <span className="flex w-12 flex-col gap-[5px]">
-              <span className="h-px w-full bg-ink" />
-              <span className="h-px w-full bg-ink" />
-              <span className="h-px w-full bg-ink" />
-            </span>
-          </button>
-
-          {/* Let's Talk */}
-          <div className="flex items-center justify-end gap-5 justify-self-end">
-            <Link
-              href="/contact"
-              className="group relative hidden text-base text-ink sm:inline-block"
-            >
-              Let&rsquo;s Talk
-              <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-ink transition-all duration-300 group-hover:w-full" />
-            </Link>
-            {/* Mobile trigger */}
-            <button
-              onClick={() => setOpen(true)}
-              aria-label="Open menu"
-              className="flex w-7 flex-col gap-[5px] md:hidden"
-            >
-              <span className="h-px w-full bg-ink" />
-              <span className="h-px w-full bg-ink" />
-              <span className="h-px w-full bg-ink" />
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Full-screen menu overlay */}
-      <AnimatePresence>
-        {open && (
+        {/* Center pill / expanding menu panel */}
+        <div className="col-span-2 row-start-1 justify-self-center md:col-span-1 md:col-start-2">
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.4, ease: EASE }}
-            className="fixed inset-0 z-[60] bg-cream"
+            animate={{ width: pillWidth }}
+            transition={{ duration: 0.55, ease: EASE }}
+            style={{ maxWidth: "88vw" }}
+            className={`group overflow-hidden rounded-[14px] transition-[background-color,transform] duration-[400ms] ease-out ${
+              open
+                ? "bg-[#1E499D]"
+                : "bg-[#EFF0F3] hover:scale-x-[1.03] hover:bg-[#1E499D]"
+            }`}
           >
-            <div className="mx-auto flex h-full max-w-[1840px] flex-col px-6 py-6 md:px-12 md:py-7">
-              <div className="flex items-center justify-between">
-                <span className="text-accent">
-                  <LogoMark className="h-9 w-9 md:h-11 md:w-11" />
-                </span>
-                <button
-                  onClick={() => setOpen(false)}
-                  aria-label="Close menu"
-                  className="text-base text-ink hover:text-accent"
-                >
-                  Close
-                </button>
-              </div>
+            {/* Header row (the pill itself) */}
+            <button
+              onClick={() => setOpen((v) => !v)}
+              aria-label={open ? "Close menu" : "Open menu"}
+              className="flex h-16 w-full items-center justify-between px-[30px]"
+            >
+              <span
+                className={`text-[16px] transition-colors duration-300 ${
+                  open ? "text-white" : "text-ink group-hover:text-white"
+                }`}
+              >
+                Menu
+              </span>
 
-              <nav className="flex flex-1 flex-col justify-center">
-                <ul className="space-y-2">
-                  {NAV_LINKS.map((link, i) => (
-                    <motion.li
-                      key={link.href}
-                      initial={{ opacity: 0, y: 24 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.1 + i * 0.07, ease: EASE }}
+              {/* Two lines that morph into an X */}
+              <span className="relative block h-4 w-8">
+                <span
+                  style={{
+                    transform: open
+                      ? "translateY(-50%) rotate(45deg)"
+                      : "translateY(calc(-50% - 3px))",
+                  }}
+                  className={`absolute left-0 top-1/2 h-[1.5px] w-8 origin-center transition-all duration-300 ${
+                    open ? "bg-white" : "bg-ink group-hover:bg-white"
+                  }`}
+                />
+                <span
+                  style={{
+                    transform: open
+                      ? "translateY(-50%) rotate(-45deg)"
+                      : "translateY(calc(-50% + 3px))",
+                  }}
+                  className={`absolute left-0 top-1/2 h-[1.5px] w-8 origin-center transition-all duration-300 ${
+                    open ? "bg-white" : "bg-ink group-hover:bg-white"
+                  }`}
+                />
+              </span>
+            </button>
+
+            {/* Expanding content */}
+            <AnimatePresence initial={false}>
+              {open && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.5, ease: EASE }}
+                  className="overflow-hidden"
+                >
+                  <ul className="px-[30px]">
+                    {NAV_LINKS.map((link, i) => (
+                      <li key={link.href}>
+                        <Link
+                          href={link.href}
+                          onClick={() => setOpen(false)}
+                          className={`group/link relative flex items-center py-[28px] ${
+                            i > 0 ? "border-t border-white/15" : ""
+                          }`}
+                        >
+                          <span className="absolute left-0 h-2 w-2 -translate-x-1 bg-white opacity-0 transition-all duration-300 group-hover/link:translate-x-0 group-hover/link:opacity-100" />
+                          <span className="text-[18px] text-white transition-transform duration-300 group-hover/link:translate-x-7">
+                            {link.label}
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Contact info */}
+                  <div className="space-y-3 px-[30px] pb-9 pt-5 text-[14px] leading-[22px] text-white/90">
+                    <a
+                      href="tel:0483987479"
+                      className="flex w-fit items-center gap-1.5 transition-colors hover:text-white"
                     >
-                      <Link
-                        href={link.href}
-                        onClick={() => setOpen(false)}
-                        className="font-display block text-5xl tracking-tight text-ink transition-colors hover:text-accent md:text-7xl"
-                      >
-                        {link.label}
-                      </Link>
-                    </motion.li>
-                  ))}
-                </ul>
-              </nav>
-            </div>
+                      0483 987 479 <ArrowUpRight size={14} strokeWidth={1.5} />
+                    </a>
+                    <a
+                      href="mailto:info@havenconstructions.com.au"
+                      className="flex w-fit items-center gap-1.5 transition-colors hover:text-white"
+                    >
+                      info@havenconstructions.com.au{" "}
+                      <ArrowUpRight size={14} strokeWidth={1.5} />
+                    </a>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+        </div>
+
+        {/* Let's Talk */}
+        <Link
+          href="/contact"
+          className={`group relative hidden h-16 items-center justify-self-end text-[16px] text-ink transition-all duration-500 ease-out sm:flex ${sideHidden}`}
+        >
+          Let&rsquo;s Talk
+          <span className="absolute bottom-[18px] left-0 h-px w-0 bg-ink transition-all duration-300 group-hover:w-full" />
+        </Link>
+      </div>
+    </header>
   );
 }

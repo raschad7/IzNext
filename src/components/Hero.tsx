@@ -7,7 +7,9 @@ const EASE = [0.22, 1, 0.36, 1] as const
 
 export default function Hero() {
   return (
-    <section className="relative flex min-h-screen flex-col bg-white px-6 md:px-12">
+    // Sticky/pinned: the hero holds in place while the intro video scrolls up
+    // over it, so the statement and EST./MELBOURNE labels never move.
+    <section className="sticky top-0 z-0 flex h-screen flex-col bg-white px-6 md:px-12">
       <div className="mx-auto flex w-full max-w-[1840px] flex-1 flex-col">
         {/* Statement, upper-right */}
         <div className="flex justify-end pt-28 md:pt-36">
