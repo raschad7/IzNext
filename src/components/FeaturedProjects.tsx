@@ -1,11 +1,11 @@
 "use client"
 
 import { useRef, useEffect } from "react"
-import Image from "next/image"
 import Link from "next/link"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { SplitText } from "gsap/SplitText"
+import ProjectCard from "./ProjectCard"
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText)
@@ -14,7 +14,8 @@ if (typeof window !== "undefined") {
 /*
   "Featured Projects" section — same text animation pattern as GuidingValues.
   Layout: 12-col grid, heading top-left, divider, label left, body copy right
-  with "See all projects" link. Below: centered project card image (690×816).
+  with "See all projects" link. 
+  Below: Projects grid (Calibre, Obsidian, Ascot Residence, Small house).
 */
 export default function FeaturedProjects() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -25,8 +26,6 @@ export default function FeaturedProjects() {
   const para2Ref = useRef<HTMLParagraphElement>(null)
   const dividerRef = useRef<HTMLDivElement>(null)
   const linkRef = useRef<HTMLAnchorElement>(null)
-  const imageRef = useRef<HTMLDivElement>(null)
-  const imageInnerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!sectionRef.current) return
@@ -135,22 +134,6 @@ export default function FeaturedProjects() {
           once: true,
         },
       })
-
-      /* ── Image subtle parallax (matches GuidingValues) ── */
-      gsap.fromTo(
-        imageInnerRef.current,
-        { yPercent: -15 },
-        {
-          yPercent: 15,
-          ease: "none",
-          scrollTrigger: {
-            trigger: imageRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        },
-      )
     }, sectionRef)
 
     return () => ctx.revert()
@@ -204,8 +187,8 @@ export default function FeaturedProjects() {
               As a family-owned builder with over 35 years of experience in
               Melbourne, we bring continuity, accountability, and proven
               capability to every project. The result is a portfolio of homes
-              that are thoughtfully crafted. Projects defined by precision, care,
-              and quiet excellence.
+              that are thoughtfully crafted. Projects defined by precision,
+              care, and quiet excellence.
             </p>
 
             <div className="mt-8 overflow-hidden">
@@ -223,30 +206,63 @@ export default function FeaturedProjects() {
           </div>
         </div>
 
-        {/* ── Centered project image ── */}
+        {/* ── Projects Grid ── */}
+
+        {/* 1. Centered project card: Calibre */}
         <div className="mt-24 flex justify-center">
-          <div
-            ref={imageRef}
-            className="relative w-full max-w-[690px] overflow-hidden"
-            style={{ aspectRatio: "690 / 816" }}
-          >
-            <div
-              ref={imageInnerRef}
-              style={{
-                position: "absolute",
-                height: "110%",
-                width: "100%",
-                top: "-10%",
-              }}
-            >
-              <Image
-                src="/images/feature1.jpeg"
-                alt="Featured project"
+          <div className="w-full max-w-[690px]">
+            <ProjectCard
+              href="/projects/calibre"
+              imageSrc="/images/feature1.jpeg"
+              width={690}
+              height={816}
+              title="Calibre"
+              year="2025"
+              alt="Calibre project"
+            />
+          </div>
+        </div>
+
+        {/* 2. Two-column grid below Calibre */}
+        <div className="mt-[120px] grid grid-cols-12 gap-x-5 gap-y-16 lg:gap-y-0">
+          {/* Left column (Video + Ascot Residence) */}
+          <div className="col-span-12 lg:col-span-5 flex flex-col gap-16 lg:gap-[120px]">
+            <div className="w-full max-w-[567px]">
+              <ProjectCard
+                href="/projects/obsidian"
+                videoSrc="/videos/feature2.mp4"
+                width={567}
+                height={794}
+                title="Obsidian"
+                year="2025"
+                alt="Obsidian project"
+              />
+            </div>
+
+            <div className="w-full max-w-[567px]">
+              <ProjectCard
+                href="/projects/ascot"
+                imageSrc="/images/feature4.jpeg"
+                width={567}
+                height={794}
+                title="Ascot Residence"
+                year="2019"
+                alt="Ascot Residence project"
+              />
+            </div>
+          </div>
+
+          {/* Right column (Small house) with top padding offset */}
+          <div className="col-span-12 lg:col-span-6 lg:col-start-7 pt-[180px]">
+            <div className="w-full max-w-[690px]">
+              <ProjectCard
+                href="/projects/small-house"
+                imageSrc="/images/feature3.jpeg"
                 width={690}
-                height={816}
-                quality={90}
-                unoptimized
-                className="h-full w-full object-cover"
+                height={1177}
+                title="Small house"
+                year="2024"
+                alt="Small house project"
               />
             </div>
           </div>
