@@ -183,7 +183,7 @@ export default function FeaturedProjects() {
               focus, and care it deserves.
             </p>
 
-            <p ref={para2Ref} className="text-[18px] leading-[28px] mt-8">
+            <p ref={para2Ref} className="text-[17px] leading-[28px] mt-8">
               As a family-owned builder with over 35 years of experience in
               Melbourne, we bring continuity, accountability, and proven
               capability to every project. The result is a portfolio of homes
@@ -199,7 +199,7 @@ export default function FeaturedProjects() {
               >
                 <span className="relative">
                   See all projects
-                  <span className="absolute bottom-0 left-0 h-px w-full bg-ink/30 transition-colors duration-300 group-hover:bg-ink" />
+                  <span className="absolute bottom-0 left-0 h-px w-0 bg-ink transition-all duration-300 group-hover:w-full" />
                 </span>
               </Link>
             </div>

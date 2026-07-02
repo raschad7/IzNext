@@ -40,6 +40,8 @@ export default function ProjectCard({
   const hoverRightRef = useRef<HTMLDivElement>(null)
   const mediaRef = useRef<HTMLDivElement>(null)
   const mediaInnerRef = useRef<HTMLDivElement>(null)
+  const isHovered = useRef(false)
+  const lastMouse = useRef({ x: 0, y: 0 })
   const quickY = useRef<{ arrow: any; left: any; right: any } | null>(null)
 
   useEffect(() => {
@@ -73,9 +75,30 @@ export default function ProjectCard({
     }
     const qx = gsap.quickTo(arrowRef.current, "x", { duration: 0.25, ease: "power3" })
     ;(quickY.current as any).arrowX = qx
+
+    const updateCursor = () => {
+      if (!cardRef.current || !quickY.current || !isHovered.current) return
+      const rect = cardRef.current.getBoundingClientRect()
+      const x = lastMouse.current.x - rect.left
+      const y = lastMouse.current.y - rect.top
+      quickY.current.arrow(y)
+      ;(quickY.current as any).arrowX(x)
+      quickY.current.left(y)
+      quickY.current.right(y)
+    }
+
+    const onScroll = () => {
+      if (isHovered.current) {
+        updateCursor()
+      }
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
   const handleMouseEnter = () => {
+    isHovered.current = true
     gsap.to(overlayRef.current, { opacity: 1, duration: 0.4 })
     gsap.to(arrowRef.current, { opacity: 1, scale: 1, duration: 0.35, ease: "power2.out" })
     gsap.fromTo(
@@ -91,6 +114,7 @@ export default function ProjectCard({
   }
 
   const handleMouseLeave = () => {
+    isHovered.current = false
     gsap.to(overlayRef.current, { opacity: 0, duration: 0.35 })
     gsap.to(arrowRef.current, { opacity: 0, scale: 0.6, duration: 0.3 })
     gsap.to(hoverLeftRef.current, { xPercent: -120, opacity: 0, duration: 0.4, ease: "power3.in" })
@@ -99,6 +123,7 @@ export default function ProjectCard({
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!cardRef.current || !quickY.current) return
+    lastMouse.current = { x: e.clientX, y: e.clientY }
     const rect = cardRef.current.getBoundingClientRect()
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top

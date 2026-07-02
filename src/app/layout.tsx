@@ -27,8 +27,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${suisse.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-cream text-ink">
+    <html lang="en" className={`${suisse.variable} h-full antialiased`} suppressHydrationWarning>
+      <body className="min-h-full flex flex-col bg-cream text-ink" suppressHydrationWarning>
         <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>

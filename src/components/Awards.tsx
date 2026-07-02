@@ -95,7 +95,7 @@ export default function Awards() {
     >
       <div className="mx-auto max-w-[1840px] px-6 md:px-12">
         {/* Label */}
-        <div className="flex items-center gap-2.5 mb-20">
+        <div className="flex items-center gap-2.5 mb-8">
           <span ref={dotRef} className="inline-block w-[7px] h-[7px] bg-ink" />
           <span ref={labelRef} className="text-[14px] leading-[22px]">
             Awards
@@ -110,7 +110,7 @@ export default function Awards() {
               ref={(el) => {
                 rowsRef.current[i] = el
               }}
-              className="flex flex-col md:flex-row md:items-center py-4 border-b border-ink/15 text-[20px] leading-[32px] md:leading-none"
+              className="flex flex-col md:flex-row md:items-center py-4 border-b border-ink/15 text-[17px] leading-[32px] md:leading-none"
             >
               <div className="w-full md:w-[45%] mb-2 md:mb-0">{item.org}</div>
               <div className="w-full md:w-[45%] mb-2 md:mb-0">{item.award}</div>

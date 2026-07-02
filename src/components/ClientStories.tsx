@@ -73,16 +73,12 @@ function VideoPlayer({ src, client, project }: { src: string, client: string, pr
           playsInline
           loop
         />
-        {/* Dark overlay when paused to make "Play" readable, completely optional but good for UX */}
-        <div 
-          className={`absolute inset-0 bg-black/20 pointer-events-none transition-opacity duration-500 ${isPlaying ? 'opacity-0' : 'opacity-100'}`} 
-        />
         <div
           ref={cursorRef}
-          className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-1/2 text-white text-[24px] tracking-tight uppercase"
+          className="pointer-events-none absolute z-30 -translate-x-1/2 -translate-y-1/2 text-white text-[40px] tracking-tight uppercase"
           style={{ opacity: 0, scale: 0.8, top: 0, left: 0 }}
         >
-          {isPlaying ? "Pause" : "Play"}
+          Play
         </div>
       </div>
     </div>

@@ -2,10 +2,19 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 /*
   Smooth-scroll layer (Lenis) — gives the slow, weighted momentum feel the
   live Haven site uses, and drives the scroll-linked reveals smoothly.
+
+  Lenis is synced with GSAP's ticker and ScrollTrigger so that
+  scrub-based animations track the interpolated scroll position.
 */
 export default function SmoothScroll({
   children,
@@ -19,15 +28,20 @@ export default function SmoothScroll({
       smoothWheel: true,
     });
 
-    let raf = 0;
-    const loop = (time: number) => {
-      lenis.raf(time);
-      raf = requestAnimationFrame(loop);
+    // Forward every Lenis scroll event to ScrollTrigger so scrub
+    // animations read the correct (interpolated) scroll position.
+    lenis.on("scroll", ScrollTrigger.update);
+
+    // Drive Lenis from GSAP's unified ticker instead of a separate
+    // requestAnimationFrame loop — keeps everything in sync.
+    const tickerCallback = (time: number) => {
+      lenis.raf(time * 1000);
     };
-    raf = requestAnimationFrame(loop);
+    gsap.ticker.add(tickerCallback);
+    gsap.ticker.lagSmoothing(0);
 
     return () => {
-      cancelAnimationFrame(raf);
+      gsap.ticker.remove(tickerCallback);
       lenis.destroy();
     };
   }, []);

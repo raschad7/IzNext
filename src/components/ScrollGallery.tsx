@@ -33,20 +33,20 @@ export default function ScrollGallery() {
   const bespokeX = useTransform(scrollYProgress, [0, 1], [0, -22])
   const luxuryX = useTransform(scrollYProgress, [0, 1], [0, 22])
 
-  // The photo CHANGES WHILE it grows — 4 photos over equal quarters
-  // (swaps at 25% / 50% / 75%), so it's on the 4th just before full width.
-  const op0 = useTransform(scrollYProgress, [0, 0.449, 0.45], [1, 1, 0])
+  // The photo CHANGES WHILE it grows. Evenly distribute the 4 photos
+  // over the scroll progress (swaps at 25% / 50% / 75%).
+  const op0 = useTransform(scrollYProgress, [0, 0.249, 0.25], [1, 1, 0])
   const op1 = useTransform(
     scrollYProgress,
-    [0.449, 0.45, 0.649, 0.65],
+    [0.249, 0.25, 0.499, 0.50],
     [0, 1, 1, 0],
   )
   const op2 = useTransform(
     scrollYProgress,
-    [0.649, 0.65, 0.849, 0.85],
+    [0.499, 0.50, 0.749, 0.75],
     [0, 1, 1, 0],
   )
-  const op3 = useTransform(scrollYProgress, [0.849, 0.85, 1], [0, 1, 1])
+  const op3 = useTransform(scrollYProgress, [0.749, 0.75, 1], [0, 1, 1])
   const opacities = [op0, op1, op2, op3]
 
   return (
